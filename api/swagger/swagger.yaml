@@ -1,12 +1,12 @@
 swagger: "2.0"
 info:
-  version: "0.0.1"
-  title: Hello World App
+  version: "1.0"
+  title: Dogs App
 # during dev, should point to your local machine
 host: localhost:10010
-# basePath prefixes all resource paths 
+# basePath prefixes all resource paths
 basePath: /
-# 
+#
 schemes:
   # tip: remove http to make production-grade
   - http
@@ -18,13 +18,13 @@ consumes:
 produces:
   - application/json
 paths:
-  /hello:
+  /dogs:
     # binds a127 app logic to a route
     x-swagger-router-controller: hello_world
     get:
-      description: Returns 'Hello' to the caller
+      description: Returns list of dogs
       # used as the method name of the controller
-      operationId: hello
+      operationId: dogList
       parameters:
         - name: name
           in: query
@@ -35,8 +35,52 @@ paths:
         "200":
           description: Success
           schema:
-            # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
+            type: object
+            properties:
+              meta:
+                $ref: "#/definitions/meta"
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/DogResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /dogs/{id}:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: hello_world
+    get:
+      description: Returns instance of a dog
+      # used as the method name of the controller
+      operationId: dogInstance
+      parameters:
+        - name: id
+          in: path
+          description: The id of the dog to return
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: "#/definitions/meta"
+              data:
+                type: object
+                items:
+                  $ref: "#/definitions/DogResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
         # responses may fall through to errors
         default:
           description: Error
@@ -46,12 +90,32 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
-  HelloWorldResponse:
+  DogResponse:
     required:
-      - message
+      - id
+      - breed
+      - desc
     properties:
-      message:
+      id:
+        type: number
+      breed:
         type: string
+      desc:
+        type: string
+      url:
+        type: string
+  meta:
+    required:
+      - user
+      - date
+      - responseTime
+    properties:
+      user:
+        type: string
+      date:
+        type: string
+      responseTime:
+        type: number
   ErrorResponse:
     required:
       - message

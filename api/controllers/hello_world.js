@@ -10,7 +10,13 @@
 
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
+var _ = require('lodash');
 var util = require('util');
+// Mocks
+var meta = require('../mocks/meta.json');
+// var dogs = require('../mocks/dogs.json');
+var types = require('../mocks/types.json');
+
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -25,7 +31,8 @@ var util = require('util');
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  hello: hello
+  dogList: dogList,
+  dogInstance: dogInstance
 };
 
 /*
@@ -34,11 +41,29 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function hello(req, res) {
-  // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  var name = req.swagger.params.name.value || 'stranger';
-  var hello = util.format('Hello, %s!', name);
+function dogList(req, res, next) {
+  // // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
 
-  // this sends back a JSON response which is a single string
-  res.json(hello);
+  var dog = {};
+  dog.meta = meta;
+  dog.data = types;
+
+  res.json(dog);
+}
+
+function dogInstance(req, res, next) {
+  var dog = {};
+  dog.meta = meta;
+  _.forEach(types, function(type, index) {
+    if (type.id == req.swagger.params.id.value)
+    {
+      dog.data = type;
+    }
+  });
+
+  if(!dog.data) {
+    //throw error
+  }
+
+  res.json(dog);
 }
