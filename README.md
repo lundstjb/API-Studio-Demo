@@ -27,6 +27,6 @@ $ swagger project start
 It just works!
 
 ```bash
-$ curl http://127.0.0.1:10010/hello?name=Scott
-"Hello, Scott!"
+http://localhost:10010/dogs - List of dogs
+http://localhost:10010/dogs/1 - Instance of a dog
 ```
