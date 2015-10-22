@@ -74,9 +74,7 @@ paths:
               meta:
                 $ref: "#/definitions/meta"
               data:
-                type: object
-                items:
-                  $ref: "#/definitions/DogResponse"
+                $ref: "#/definitions/DogResponse"
         "404":
           description: Not Found
           schema:
